@@ -48,8 +48,8 @@ jobs:
         working-directory: ios
         run: |
           WORKSPACE=$(ls -d *.xcworkspace | head -n1)
-          SCHEME=$(xcodebuild -list -workspace "$WORKSPACE" -json \
-            | python3 -c "import json,sys; print(json.load(sys.stdin)['workspace']['schemes'][0])")
+          PROJECT=$(ls -d *.xcodeproj | head -n1)
+          SCHEME=$(basename "$PROJECT" .xcodeproj)
           echo "workspace=$WORKSPACE" >> "$GITHUB_OUTPUT"
           echo "scheme=$SCHEME" >> "$GITHUB_OUTPUT"
           echo "Using workspace=$WORKSPACE scheme=$SCHEME"
