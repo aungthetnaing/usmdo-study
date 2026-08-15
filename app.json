@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "USMDO Study",
+    "slug": "usmdo-study",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "scheme": "usmdostudy",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#0f172a"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.usmdostudy"
+    },
+    "android": {
+      "package": "com.example.usmdostudy"
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
