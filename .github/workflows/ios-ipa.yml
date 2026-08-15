@@ -54,7 +54,7 @@ jobs:
           echo "scheme=$SCHEME" >> "$GITHUB_OUTPUT"
           echo "Using workspace=$WORKSPACE scheme=$SCHEME"
 
-      - name: Archive (no code signing)
+      - name: Build app (no code signing)
         working-directory: ios
         run: |
           xcodebuild \
@@ -62,10 +62,9 @@ jobs:
             -scheme "${{ steps.xc.outputs.scheme }}" \
             -configuration Release \
             -sdk iphoneos \
-            -archivePath "$PWD/build/App.xcarchive" \
+            -destination "generic/platform=iOS" \
             -derivedDataPath "$PWD/build/dd" \
-            archive \
-            SKIP_INSTALL=NO \
+            build \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
@@ -74,18 +73,10 @@ jobs:
       - name: Package unsigned IPA
         working-directory: ios
         run: |
-          # Xcode versions differ in where the .app lands. Search the archive
-          # first, then fall back to the DerivedData build products.
-          APP=$(ls -d build/App.xcarchive/Products/Applications/*.app 2>/dev/null | head -n1)
+          APP=$(find build/dd/Build/Products -type d -name "*.app" | head -n1)
           if [ -z "$APP" ]; then
-            APP=$(find build/dd/Build/Products -type d -name "*.app" 2>/dev/null | head -n1)
-          fi
-          if [ -z "$APP" ]; then
-            APP=$(find build -type d -name "*.app" 2>/dev/null | head -n1)
-          fi
-          if [ -z "$APP" ]; then
-            echo "No .app produced by the archive." >&2
-            find build -maxdepth 6 -name "*.app" -o -name "*.xcarchive" >&2 || true
+            echo "No .app was produced by the build." >&2
+            find build -type d -name "*.app" >&2 || true
             exit 1
           fi
           echo "Using app bundle: $APP"
